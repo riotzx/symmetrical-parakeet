@@ -57,7 +57,7 @@ margin:20px 0;
 
 <h1>❤️ For My Momo ❤️</h1>
 
-<button onclick="login()">Open Love Letter</button>
+<button id="openBtn" type="button">Open Love Letter</button>
 
 <div id="content">
 
@@ -73,7 +73,7 @@ I love you forever. ❤️
 
 <p><em>Track: 10,000 Hours — Justin Bieber &amp; Dan + Shay</em></p>
 
-<audio controls>
+<audio id="audio" controls>
   <source src="https://archive.org/download/cloud0218popsongs2019/01bbcc2019.mp3" type="audio/mpeg">
   Your browser does not support the audio element.
 </audio>
@@ -83,31 +83,53 @@ I love you forever. ❤️
 </div>
 
 <script>
+const openBtn = document.getElementById('openBtn');
+
+openBtn.addEventListener('click', login);
 
 function login(){
-let pass=prompt("Enter Password");
-if(pass==="0708"){
-document.getElementById("content").style.display="block";
-}else{
-alert("Wrong Password ❤️");
-}
+  const pass = prompt("Enter Password");
+  // If user clicked Cancel, pass === null — do nothing
+  if (pass && pass.trim() === "0708") {
+    document.getElementById("content").style.display = "block";
+
+    // Try to start playing the audio. Modern browsers may still block autoplay;
+    // if blocked, the catch will run and we can optionally show a message.
+    const audio = document.getElementById('audio');
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        // playing
+      }).catch((err) => {
+        // Autoplay blocked — user can press the play button shown by the controls
+        console.warn('Autoplay prevented:', err);
+        // Optionally notify the user in a friendlier way:
+        setTimeout(() => {
+          alert('Music playback was blocked by the browser. Please press the play button on the audio control to start the song.');
+        }, 200);
+      });
+    }
+  } else if (pass !== null) {
+    // Only alert when user actually entered something wrong (not when they cancelled)
+    alert("Wrong Password ❤️");
+  }
 }
 
 var countDownDate=new Date("August 7, 2026 00:00:00").getTime();
 
 setInterval(function(){
 
-var now=new Date().getTime();
+  var now=new Date().getTime();
 
-var distance=countDownDate-now;
+  var distance=countDownDate-now;
 
-var days=Math.floor(distance/(1000*60*60*24));
-var hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
-var minutes=Math.floor((distance%(1000*60*60))/(1000*60));
-var seconds=Math.floor((distance%(1000*60))/1000);
+  var days=Math.floor(distance/(1000*60*60*24));
+  var hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+  var minutes=Math.floor((distance%(1000*60*60))/(1000*60));
+  var seconds=Math.floor((distance%(1000*60))/1000);
 
-document.getElementById("countdown").innerHTML=
-days+"d "+hours+"h "+minutes+"m "+seconds+"s";
+  document.getElementById("countdown").innerHTML=
+  days+"d "+hours+"h "+minutes+"m "+seconds+"s";
 
 },1000);
 
